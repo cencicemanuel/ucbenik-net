@@ -20,7 +20,11 @@ export default function PrijavaPage() {
     setError(null)
 
     if (mode === 'signup') {
-      const { error } = await supabase.auth.signUp({ email, password })
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+      })
       if (error) { setError(error.message); setLoading(false); return }
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
