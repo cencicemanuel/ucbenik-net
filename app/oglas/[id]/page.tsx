@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createSupabaseServerClient } from '@/lib/supabase-server'
 import { Listing } from '@/lib/types'
 import PhotoGallery from '@/components/PhotoGallery'
+import SaveButton from '@/components/SaveButton'
 
 const CONDITION_LABEL: Record<string, string> = {
   'odlično': 'Odlično',
@@ -22,15 +23,25 @@ export default async function OglasPage({ params }: { params: Params }) {
   const { id } = await params
 
   const supabase = await createSupabaseServerClient()
-  const { data, error } = await supabase
-    .from('listings')
-    .select('*')
-    .eq('id', id)
-    .single()
+  const [{ data, error }, { data: { user } }] = await Promise.all([
+    supabase.from('listings').select('*').eq('id', id).single(),
+    supabase.auth.getUser(),
+  ])
 
   if (error || !data) notFound()
 
   const listing = data as Listing
+
+  let isSaved = false
+  if (user) {
+    const { data: saved } = await supabase
+      .from('saved_listings')
+      .select('listing_id')
+      .eq('user_id', user.id)
+      .eq('listing_id', id)
+      .single()
+    isSaved = !!saved
+  }
   const date = new Date(listing.created_at).toLocaleDateString('sl-SI', {
     day: 'numeric',
     month: 'long',
@@ -45,7 +56,10 @@ export default async function OglasPage({ params }: { params: Params }) {
       </Link>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <PhotoGallery photos={listing.photos ?? []} />
+        <div className="relative">
+          <PhotoGallery photos={listing.photos ?? []} />
+          <SaveButton listingId={listing.id} initialSaved={isSaved} />
+        </div>
 
         <div className="space-y-4">
           <div>

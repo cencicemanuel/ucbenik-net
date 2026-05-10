@@ -38,7 +38,7 @@ export default async function MojiOglasiPage() {
           {listings.map((listing) => (
             <div key={listing.id} className="flex flex-col gap-1">
               <ListingCard listing={listing} isSaved={savedIds.has(listing.id)} />
-              <form action={deleteListing}>
+              <form action={deleteListing} onSubmit={(e) => { if (!confirm('Si prepričan, da želiš izbrisati ta oglas?')) e.preventDefault() }}>
                 <input type="hidden" name="id" value={listing.id} />
                 <button
                   type="submit"
