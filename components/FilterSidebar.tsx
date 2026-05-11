@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback } from 'react'
-import { SCHOOLS, CITIES } from '@/lib/schools'
+import { CITIES } from '@/lib/schools'
 
 export default function FilterSidebar() {
   const router = useRouter()
@@ -42,22 +42,6 @@ export default function FilterSidebar() {
             onChange={(e) => updateParam('q', e.target.value)}
             className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-        </div>
-
-        <div>
-          <label className="block text-xs font-medium text-slate-700 mb-1">Šola</label>
-          <select
-            value={searchParams.get('sola') ?? ''}
-            onChange={(e) => updateParam('sola', e.target.value)}
-            className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Vse šole</option>
-            {SCHOOLS.map((school) => (
-              <option key={`${school.name}-${school.city}`} value={school.name}>
-                {school.name} ({school.city})
-              </option>
-            ))}
-          </select>
         </div>
 
         <div>

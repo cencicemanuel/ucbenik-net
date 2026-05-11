@@ -31,7 +31,6 @@ async function getListings(
     .range(from, to)
 
   const q = get(params, 'q')
-  const sola = get(params, 'sola')
   const predmet = get(params, 'predmet')
   const letnik = get(params, 'letnik')
   const stanje = get(params, 'stanje')
@@ -40,7 +39,6 @@ async function getListings(
   const mesto = get(params, 'mesto')
 
   if (q) query = query.ilike('title', `%${q}%`)
-  if (sola) query = query.eq('school_name', sola)
   if (predmet) query = query.ilike('subject', `%${predmet}%`)
   if (letnik) query = query.eq('grade_year', parseInt(letnik))
   if (stanje) query = query.eq('condition', stanje)
